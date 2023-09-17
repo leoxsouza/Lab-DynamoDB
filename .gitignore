@@ -1,0 +1,27 @@
+# Arquivos de compilação Java
+*.class
+
+# Arquivos de construção do Maven
+target/
+
+# Arquivos gerados pelo IntelliJ IDEA
+.idea/
+
+# Logs e arquivos temporários
+*.log
+*.log.*
+*.tmp
+*.swp
+
+# Arquivos de configuração do IntelliJ IDEA
+*.iml
+*.iws
+*.ipr
+
+# Arquivos de configuração do Eclipse (se estiver usando o Eclipse)
+.settings/
+.classpath
+.project
+
+# Dependendo do seu sistema operacional, você também pode querer incluir essas entradas
+.DS_Store
