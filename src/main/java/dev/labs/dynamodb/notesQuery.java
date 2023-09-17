@@ -46,13 +46,21 @@ public class notesQuery {
 
         //Build request: Query specification with Primary attributes/values to match desired item, but projects only "Notes" and "NoteId"
         // TODO 2 BEGIN
-        
+        QuerySpec spec = new QuerySpec()
+                .withProjectionExpression("NoteId, Note")
+                .withKeyConditionExpression("UserId = :v_Id")
+                .withValueMap(new ValueMap()
+                        .withString(":v_Id", userId));
+
+
+
         // TODO 2 END
 
         System.out.format(
                 "\n \n Query all notes belong to a user \"%s\" and displaying \"NoteId\" and \"Note\" attributes only:\n", userId);
 
         // TODO 3 BEGIN
+        ItemCollection<QueryOutcome> items = table.query(spec);
         
         // TODO 3 END
 

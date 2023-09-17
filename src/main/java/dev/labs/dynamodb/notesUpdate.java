@@ -46,7 +46,12 @@ public class notesUpdate {
         addNewAttribute(table, qUserId, qNoteId);
 
         // TODO 10 BEGIN
-        
+        //Allow update to the Notes item only if the note is incomplete - SUCCESS
+        updateExistingAttributeConditionally(table, qUserId, qNoteId, newNote);
+
+        //Allow update to the Notes item only if the note is incomplete - FAILURE
+        updateExistingAttributeConditionally(table, qUserId, qNoteId, newNote);
+
         // TODO 10 END
     }
 
@@ -54,7 +59,16 @@ public class notesUpdate {
 
         //Build request: Update specification to add Is_Incomplete attribute and assign value "Yes" for matching KEYs
         //TODO 7 BEGIN
-        
+        UpdateItemSpec updateItemSpec = new UpdateItemSpec()
+                .withPrimaryKey("UserId", userId, "NoteId", noteId)
+                .withUpdateExpression("set #inc = :val1")
+                .withNameMap(new NameMap()
+                        .with("#inc", "Is_Incomplete"))
+                .withValueMap(new ValueMap()
+                        .withString(":val1", "Yes"))
+                .withReturnValues(ReturnValue.ALL_NEW);
+
+
         //TODO 7 END
         try {
             //Run update and retrieve response
@@ -75,9 +89,7 @@ public class notesUpdate {
         UpdateItemSpec updateItemSpec = new UpdateItemSpec()
                 .withPrimaryKey("UserId", userId, "NoteId", noteId)
                 .withUpdateExpression("set Note = :v_notes, Is_Incomplete = :v_new")
-                // TODO 8 BEGIN
-                
-                // TODO 8 END
+                .withConditionExpression("Is_Incomplete = :v_old")
                 .withValueMap(new ValueMap()
                 .withString(":v_notes", newNote)
                 .withString(":v_new", "No")
@@ -93,7 +105,11 @@ public class notesUpdate {
             System.out.println(outcome.getItem().toJSONPretty());
         }
         //TODO 9 BEGIN
-        
+        catch (ConditionalCheckFailedException e) {
+            System.out.println("\nUPDATE#2 - REPEAT: Printing item after the conditional update for the item - \"" + userId + "\" and \"" + noteId + "\"  - FAILURE:");
+            System.out.println("UpdateItem failed on item due to unmatching condition!");
+            System.err.println(e.getMessage());
+        }
         // TODO 9 END
         catch (Exception e) {
             System.err.println("Error updating item in " + table.getTableName());
